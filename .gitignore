@@ -1,0 +1,23 @@
+*.ipynb_checkpoints
+
+
+# Python / tooling
+__pycache__/
+.pytest_cache/
+*.egg-info/
+.cache/
+.vs/
+.#*
+~$*
+Soundbank_McGill/*.tar.gz
+
+# Not for the public repo (copyrighted or licensed material; kept locally)
+Reading/
+MiscSounds/
+Soundbank_McGill/Soundbank_*/
+Soundbank_McGill/ForJim*/
+Soundbank_McGill/*.pdf
+Notebooks/*.mp3
+Notebooks/*.nbb
+Notebooks/.vs/
+pytest-cache-files-*/

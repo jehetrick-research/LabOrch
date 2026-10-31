@@ -1,0 +1,10 @@
+s = [instruments[i] for i in range(len(instruments)) if selrbuts[i].value==True ]
+bankbasis = [f  for i in s for f in ffts if i + '-' in f]
+
+palate = np.zeros( (len(target), len(bankbasis)) )
+for i,f in enumerate(bankbasis):
+    x = np.loadtxt('../Soundbank_McGill/FFTBank/' + f + '.txt', dtype='float32')
+    palate[:, i] = x
+
+w = nnls(palate, target)[0]
+wind = np.argsort(-w)

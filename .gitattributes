@@ -1,0 +1,2 @@
+# Normalize line endings of text spectra (FFTBank/*.txt were written with CRLF on Windows)
+*.txt text

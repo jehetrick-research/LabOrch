@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "laborch"
+version = "0.1.0"
+description = "LabOrch: computer-assisted orchestration by spectral decomposition"
+requires-python = ">=3.9"
+dependencies = ["numpy", "scipy"]
+
+[project.optional-dependencies]
+audio = ["pydub"]          # also needs ffmpeg on PATH
+dev = ["pytest", "pydub"]
+
+[tool.setuptools]
+packages = ["laborch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
