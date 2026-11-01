@@ -4,7 +4,7 @@ Computer-assisted orchestration: given a **Target** sound and an **Ensemble**
 of instruments, find the notes (the **Recommendation**) whose combined
 spectrum best matches the Target. Formerly *Orchestration Engine*; based on
 F. Rose and J. Hetrick, *Enhancing Orchestration Technique via Spectrally
-Based Linear Algebra Methods*, Computer Music Journal 33(1), 2009 (RH2009).
+Based Linear Algebra Methods*, Computer Music Journal 33(1), 2009 (RH2009; PDF in `Reading/`).
 
 ## Layout
 
@@ -12,10 +12,10 @@ Based Linear Algebra Methods*, Computer Music Journal 33(1), 2009 (RH2009).
 | --- | --- |
 | `laborch/` | Python package (Phase 0): Bank, FFT pipeline, DOT / NNLS solvers, mixing, synthetic tones |
 | `tests/` | pytest suite (28 tests), incl. regressions for notebook 1.5 and the Ravel example (1.12) |
-| `Notebooks/` | 2019-2020 exploration notebooks (1.x); 2.0 quick start; 2.1 synthetic marimba |
 | `Soundbank_McGill/FFTBank/` | Spectra of the McGill (MUMS) single-note samples |
 | `OldFFTBank/` | 2009 `.nbb` spectra, kept for reference and the 1.5 regression test |
 | `docs/` | Package manual (`laborch_manual` .md / .docx / .tex / .pdf) |
+| `Reading/` | The RH2009 paper, project overview deck (`LabOrch.pptx`) and background reading |
 
 ## Quick start
 
@@ -45,8 +45,7 @@ The McGill University Master Samples (MUMS) recordings and the extra Targets
 in `MiscSounds/` are licensed material and are not redistributed. If you have
 them, place them at `Soundbank_McGill/Soundbank_{WB,Str,PianoPercSax}/` and
 `MiscSounds/` (or point `LABORCH_ROOT` at a folder that has them). Tests that
-need them are skipped otherwise, and notebooks that play samples will need
-them to re-run.
+need them are skipped otherwise.
 
 ## Conventions
 

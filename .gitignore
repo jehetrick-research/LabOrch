@@ -11,13 +11,11 @@ __pycache__/
 ~$*
 Soundbank_McGill/*.tar.gz
 
-# Not for the public repo (copyrighted or licensed material; kept locally)
-Reading/
+# Not for the public repo (kept locally)
+Planning/
+Notebooks/
 MiscSounds/
 Soundbank_McGill/Soundbank_*/
 Soundbank_McGill/ForJim*/
 Soundbank_McGill/*.pdf
-Notebooks/*.mp3
-Notebooks/*.nbb
-Notebooks/.vs/
 pytest-cache-files-*/
