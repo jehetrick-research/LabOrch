@@ -52,15 +52,45 @@ def test_marimba_decomposition(bank, spec):
 
 
 def test_spectrum_round_trip(spec):
-    """Spectrum -> audio -> spectrum keeps the shape (cosine about 0.97).
+    """Spectrum -> audio -> spectrum keeps the shape.
 
-    Not 1.0: each already window-smeared bin is resynthesized as its own
-    sine and smeared again by the second analysis."""
-    y = spectrum_to_audio(spec)
-    back = make_fft(y)
-    cos = back @ spec / np.linalg.norm(back) / np.linalg.norm(spec)
-    assert cos > 0.95
+    method="bins" reaches only about 0.97: each already window-smeared bin
+    is resynthesized as its own sine and smeared again by the second
+    analysis. method="peaks" rebuilds one sine per partial."""
+    def cos(y):
+        back = make_fft(y)
+        return back @ spec / np.linalg.norm(back) / np.linalg.norm(spec)
+    assert cos(spectrum_to_audio(spec, method="bins")) > 0.95
+    assert cos(spectrum_to_audio(spec)) > 0.995
 
 
 def test_resynthesis_is_repeatable(spec):
     assert np.array_equal(spectrum_to_audio(spec, seed=3), spectrum_to_audio(spec, seed=3))
+
+
+def _wobble(y, sr=config.SAMPLE_RATE):
+    """Depth of 5-40 Hz amplitude modulation, from a 5 ms RMS envelope."""
+    fr = int(0.005 * sr)
+    env = np.sqrt(np.mean(y[:len(y) // fr * fr].reshape(-1, fr) ** 2, axis=1))[20:-20]
+    E = np.abs(np.fft.rfft(env - env.mean()))
+    f = np.fft.rfftfreq(len(env), 0.005)
+    band = (f > 5) & (f < 40)
+    return E[band].max() / (len(env) * env.mean() / 2)
+
+
+def test_peaks_remove_bin_beating():
+    """A sawtooth-like F2 (87.31 Hz, between bins): bin-by-bin resynthesis
+    wavers at about 10.8 Hz; peak resynthesis stays near the original."""
+    n = np.arange(1, 16)
+    x = tone(87.31, partials=n, amps=1 / n, seconds=2)
+    spec = make_fft(x)
+    assert _wobble(spectrum_to_audio(spec, seconds=2, method="bins")) > 0.1
+    assert _wobble(spectrum_to_audio(spec, seconds=2)) < 2 * _wobble(x) + 0.02
+
+
+def test_peak_frequencies_are_interpolated():
+    from laborch.synth import _interpolated_peaks
+    spec = make_fft(tone(87.31, partials=[1, 3], amps=[1, 0.5]))
+    hz, amp = _interpolated_peaks(spec, 1e-3 * spec.max(), config.BIN_HZ)
+    main = np.sort(hz[np.argsort(-amp)[:2]])                 # skip window side-lobes
+    assert np.allclose(main, [87.31, 261.93], atol=0.5)      # bin grid is off by ~1.2 Hz

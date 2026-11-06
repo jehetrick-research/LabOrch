@@ -60,13 +60,23 @@ def tone(f0: float, partials: Sequence[float] = (1,), amps: Optional[Sequence[fl
 
 def spectrum_to_audio(spec: np.ndarray, seconds: float = 1.0, sr: int = config.SAMPLE_RATE,
                       seed: Optional[int] = 0, threshold: float = 1e-4,
-                      peak: float = 1.0) -> np.ndarray:
+                      peak: float = 1.0, method: str = "peaks") -> np.ndarray:
     """Additive resynthesis of a magnitude spectrum with random phases.
 
-    Each bin k above ``threshold * max(spec)`` becomes a sine at
-    k * BIN_HZ with amplitude spec[k] and a random phase (``seed`` makes it
-    repeatable). Works for Bank spectra, ``Fit.model`` and ``make_fft``
-    output alike.
+    Works for Bank spectra, ``Fit.model`` and ``make_fft`` output alike.
+    ``seed`` makes the random phases repeatable.
+
+    method="peaks" (default)
+        Each local maximum above ``threshold * max(spec)`` becomes one sine.
+        Its frequency and amplitude come from a parabola through the log
+        magnitudes of the peak bin and its two neighbours, so a partial
+        between bins (e.g. F2 = 87.3 Hz) gets its own frequency instead of
+        the bin grid's.
+    method="bins"
+        Every bin k above the threshold becomes a sine at k * BIN_HZ (the
+        original behaviour). The Hamming window spreads each partial over
+        about four bins, and those neighbouring sines, 10.77 Hz apart, beat:
+        the result wavers at about 10.8 Hz.
     """
     spec = np.asarray(spec, float)
     if spec.ndim != 1:
@@ -74,10 +84,30 @@ def spectrum_to_audio(spec: np.ndarray, seconds: float = 1.0, sr: int = config.S
     rng = np.random.default_rng(seed)
     t = np.arange(int(seconds * sr)) / sr
     bin_hz = sr / (2 * len(spec))
-    k = np.nonzero(spec > threshold * spec.max())[0]
-    ph = rng.uniform(0, 2 * np.pi, len(k))
+    cut = threshold * spec.max()
+    if method == "bins":
+        k = np.nonzero(spec > cut)[0]
+        freqs, amps = k * bin_hz, spec[k]
+    elif method == "peaks":
+        freqs, amps = _interpolated_peaks(spec, cut, bin_hz)
+    else:
+        raise ValueError(f"method must be 'peaks' or 'bins', not {method!r}")
+    ph = rng.uniform(0, 2 * np.pi, len(freqs))
     x = np.zeros_like(t)
-    for kk, p in zip(k, ph):            # one bin at a time keeps memory small
-        x += spec[kk] * np.sin(2 * np.pi * kk * bin_hz * t + p)
+    for f, a, p in zip(freqs, amps, ph):   # one sine at a time keeps memory small
+        x += a * np.sin(2 * np.pi * f * t + p)
     m = np.abs(x).max()
     return x * (peak / m) if m > 0 else x
+
+
+def _interpolated_peaks(spec: np.ndarray, cut: float, bin_hz: float):
+    """Frequencies (Hz) and heights of the local maxima of ``spec`` above
+    ``cut``, refined by quadratic interpolation of the log magnitude."""
+    s = spec
+    k = np.nonzero((s[1:-1] > s[:-2]) & (s[1:-1] >= s[2:]) & (s[1:-1] > cut))[0] + 1
+    with np.errstate(divide="ignore"):
+        a, b, c = (np.log(np.maximum(s[k + j], 1e-300)) for j in (-1, 0, 1))
+    den = a - 2 * b + c
+    d = np.where(den != 0, 0.5 * (a - c) / np.where(den != 0, den, 1), 0.0)
+    d = np.clip(d, -0.5, 0.5)
+    return (k + d) * bin_hz, np.exp(b - 0.25 * (a - c) * d)

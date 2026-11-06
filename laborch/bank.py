@@ -102,6 +102,15 @@ def parse_name(name: str) -> SoundName:
     )
 
 
+def _as_set(x) -> Optional[set]:
+    """None stays None; a single string becomes a one-element set."""
+    if x is None:
+        return None
+    if isinstance(x, str):
+        return {x}
+    return set(x)
+
+
 @dataclass
 class Palette:
     """Palette spectra as columns: ``matrix`` has shape (NBINS, n_sounds).
@@ -197,11 +206,18 @@ class Bank:
 
         ``exclude`` drops named sounds (e.g. the Target itself, when the
         Target is taken from the Bank).
+
+        Each of ``instruments``, ``modes``, ``dynamics`` and ``exclude``
+        takes a list or a single string: ``exclude="trb-f2-ord-mf"`` is the
+        same as ``exclude=["trb-f2-ord-mf"]``.
         """
-        inst = set(instruments) if instruments is not None else None
-        modes = set(modes) if modes is not None else None
-        dyns = set(dynamics) if dynamics is not None else None
-        exclude = set(exclude)
+        inst = _as_set(instruments)
+        modes = _as_set(modes)
+        dyns = _as_set(dynamics)
+        exclude = _as_set(exclude) or set()
+        unknown = exclude - set(self._index)
+        if unknown:
+            warnings.warn(f"exclude: not in the Bank: {sorted(unknown)}")
         keep = []
         for n in self.names:
             s = self.info[n]
