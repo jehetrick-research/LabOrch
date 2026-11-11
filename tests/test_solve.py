@@ -46,3 +46,17 @@ def test_pinv_and_dot_shapes(toy):
 def test_weights_to_db():
     db = weights_to_db([1.0, 0.1, 0.0])
     assert np.allclose(db, [0, -20, -60])
+
+
+def test_weights_to_db_power():
+    assert np.allclose(weights_to_db([1.0, 0.1], kind="power"), [0, -10])
+    assert np.allclose(weights_to_db([2.0, 0.5], kind="power", relative=False),
+                       [10 * np.log10(2), 10 * np.log10(0.5)])
+
+
+def test_nnls_is_scale_invariant(toy):
+    """Tiny power values (Bank v2) give the same weights."""
+    pal, T = toy
+    small = Palette(pal.names, pal.matrix * 1e-9)
+    f = nnls_fit(small, T * 1e-9)
+    assert np.allclose(f.weights, [0.5, 0, 0, 0.2, 0, 0], atol=1e-8)

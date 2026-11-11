@@ -26,10 +26,10 @@ def _mute_c5(track):
 
 
 @pytest.fixture(scope="module")
-def spectra(bank):
+def spectra(bank_v1):
     if not MUTES.exists():
         pytest.skip("MiscSounds not present")
-    wood = sum(bank.spectrum(n) for n in WOODWINDS)
+    wood = sum(bank_v1.spectrum(n) for n in WOODWINDS)
     wood = wood / wood.sum()
     return wood, _mute_c5("5 Track 05.aiff"), _mute_c5("11 Track 11.aiff")
 
@@ -54,6 +54,39 @@ def test_energy_sits_where_the_paper_says(spectra):
     """Woodwinds and cup mute peak near the 2nd partial (about 1,050 Hz);
     the straight mute peaks much higher."""
     wood, straight, cup = spectra
+    hz = lambda s: s.argmax() * config.BIN_HZ
+    assert abs(hz(cup) - hz(wood)) < 50
+    assert hz(straight) > 2 * hz(wood)
+
+
+# ---- the same example on Bank v2 (power spectra, detected sustain) --------
+
+@pytest.fixture(scope="module")
+def spectra_v2(bank):
+    if not MUTES.exists():
+        pytest.skip("MiscSounds not present")
+    from laborch.spectra import power_spectrum, segment_float
+
+    def mute(track):
+        chunks = split_on_silence(MUTES / track)
+        return power_spectrum(segment_float(chunks[2]))[0]
+
+    wood = sum(bank.spectrum(n) for n in WOODWINDS)   # powers add
+    return wood, mute("5 Track 05.aiff"), mute("11 Track 11.aiff")
+
+
+@requires_audio
+def test_cup_mute_is_closer_v2(spectra_v2):
+    wood, straight, cup = spectra_v2
+    assert _cos(wood, cup) > _cos(wood, straight)
+    assert _cos(np.sqrt(wood), np.sqrt(cup)) > _cos(np.sqrt(wood), np.sqrt(straight))
+    unit = lambda s: s / s.sum()
+    assert _log_dist(unit(wood), unit(cup)) < _log_dist(unit(wood), unit(straight))
+
+
+@requires_audio
+def test_energy_sits_where_the_paper_says_v2(spectra_v2):
+    wood, straight, cup = spectra_v2
     hz = lambda s: s.argmax() * config.BIN_HZ
     assert abs(hz(cup) - hz(wood)) < 50
     assert hz(straight) > 2 * hz(wood)

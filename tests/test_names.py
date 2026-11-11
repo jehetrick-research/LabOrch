@@ -25,13 +25,19 @@ def test_bad_name():
         parse_name("obo-f5-c6")
 
 
-def test_every_bank_name_parses(bank):
+@pytest.mark.parametrize("which", ["bank", "bank_v1"])
+def test_every_bank_name_parses(which, request):
+    bank = request.getfixturevalue(which)
     assert len(bank) == 1515
     assert set(bank.instruments) == set(INSTRUMENT_NAMES)
     for n in bank.names:
         assert str(bank.info[n]) == n
 
 
-def test_bank_spectra_are_unit_normalized(bank):
-    sums = bank.spectra.sum(axis=1)
+def test_v1_and_v2_hold_the_same_sounds(bank, bank_v1):
+    assert bank.names == bank_v1.names
+
+
+def test_bank_v1_spectra_are_unit_normalized(bank_v1):
+    sums = bank_v1.spectra.sum(axis=1)
     assert abs(sums - 1).max() < 1e-6

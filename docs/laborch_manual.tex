@@ -3,24 +3,21 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
 \documentclass[
   10pt,
 ]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{iftex}
-\ifPDFTeX
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-\ifPDFTeX\else
-  % xetex/luatex font selection
   \setmainfont[]{DejaVu Serif}
   \setsansfont[]{DejaVu Sans}
   \setmonofont[Scale=0.85]{DejaVu Sans Mono}
@@ -42,6 +39,18 @@
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={laborch: Package Manual},
+  pdfauthor={LabOrch project},
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=2.2cm]{geometry}
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -54,13 +63,13 @@
 \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
 \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
 \newcommand{\BuiltInTok}[1]{#1}
 \newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
@@ -68,7 +77,7 @@
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
 \newcommand{\ExtensionTok}[1]{#1}
 \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\ImportTok}[1]{#1}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
@@ -77,14 +86,13 @@
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
+\usepackage{longtable,booktabs}
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
 \makeatletter
@@ -104,21 +112,6 @@
 \usepackage{titling}
 \renewcommand{\arraystretch}{1.1}
 \setlength{\emergencystretch}{3em}
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
-\hypersetup{
-  pdftitle={laborch: Package Manual},
-  pdfauthor={LabOrch project},
-  colorlinks=true,
-  linkcolor={blue},
-  filecolor={Maroon},
-  citecolor={Blue},
-  urlcolor={blue},
-  pdfcreator={LaTeX via pandoc}}
 
 \title{laborch: Package Manual}
 \usepackage{etoolbox}
@@ -127,9 +120,9 @@
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-\subtitle{Version 0.1.0 (Phase 0)}
+\subtitle{Version 0.2.0 (Phase 1)}
 \author{LabOrch project}
-\date{October 2026}
+\date{November 2026}
 
 \begin{document}
 \maketitle
@@ -146,39 +139,80 @@ instruments, it finds the combination of recorded notes
 whose summed spectrum best matches the Target. The package
 gathers the logic of the 2019--2020 notebooks (1.5, 1.7,
 1.11, 1.12 and the \texttt{tool*.py} widget scripts) into
-tested, importable modules.
+tested, importable modules (Phase 0), and turns the Bank
+into a dataset (Phase 1): \textbf{Bank v2} holds power
+spectra averaged over each note's automatically detected
+sustain, keeps every recording's level, and comes with a
+metadata table. See \texttt{docs/bank\_v2.md} for how it was
+made and what it covers.
 
 \subsection{1. Concepts and vocabulary}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Term
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-In code
-\end{minipage} \\
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Term\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Meaning\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+In code\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\textbf{Bank} & Every recorded note of every instrument
-(1,515 sounds, 33 instruments), each stored as an averaged
-spectrum & \texttt{Bank} \\ \addlinespace[5pt]
-\textbf{Ensemble} & The instruments the composer writes for,
-e.g.~a string quartet & a list of instrument codes,
-\texttt{{[}"vln",\ "vla",\ "vlc"{]}} \\ \addlinespace[5pt]
-\textbf{Palette} & Every Bank sound the Ensemble can play
-(notes, modes, dynamics), as a matrix of spectra &
-\texttt{Palette} (from \texttt{Bank.select}) \\ \addlinespace[5pt]
-\textbf{Target} & The sound to imitate: a Bank sound or an
-uploaded recording & a 2,048-element NumPy array \\ \addlinespace[5pt]
-\textbf{Recommendation} & The weighted set of Palette sounds
-that best reproduces the Target & \texttt{Fit} \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\textbf{Bank}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Every recorded note of every instrument (1,515 sounds, 33
+instruments), each stored as an averaged spectrum\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Bank}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\textbf{Ensemble}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+The instruments the composer writes for, e.g.~a string
+quartet\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+a list of instrument codes,
+\texttt{{[}"vln",\ "vla",\ "vlc"{]}}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\textbf{Palette}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Every Bank sound the Ensemble can play (notes, modes,
+dynamics), as a matrix of spectra\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Palette} (from \texttt{Bank.select})\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\textbf{Target}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+The sound to imitate: a Bank sound or an uploaded
+recording\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+a 2,048-element NumPy array\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\textbf{Recommendation}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+The weighted set of Palette sounds that best reproduces the
+Target\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Fit}\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 The model (Rose \& Hetrick 2009, ``RH2009'') treats the
@@ -193,6 +227,13 @@ The weights $\alpha$ are found by non-negative least squares
 (NNLS), optionally weighted per frequency bin by $1/\sigma_i$ as in
 \emph{Numerical Recipes} §15.4.
 
+In Bank v2 the spectra are \textbf{power} spectra at each
+recording's level. Powers of uncorrelated sounds add, so the
+model is exact for a mix, and a weight αⱼ is a power gain on
+recording j: αⱼ = 1 means ``as recorded'', αⱼ = 0.5 means 3
+dB quieter. (In Bank v1 the spectra were unit-sum magnitudes
+and a weight was only a share of the fit.)
+
 \subsection{2. Installation}
 
 Requirements: Python $\ge$ 3.9, NumPy, SciPy. Audio features
@@ -203,7 +244,7 @@ From the \texttt{LabOrch} folder:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}e} \StringTok{".[dev]"}     \CommentTok{\# package + pydub + pytest, editable}
+\ExtensionTok{pip}\NormalTok{ install {-}e }\StringTok{".[dev]"}\NormalTok{     \# package + pydub + pytest, editable}
 \CommentTok{\# or, without installing:}
 \CommentTok{\#   import sys; sys.path.insert(0, "path/to/LabOrch")}
 \end{Highlighting}
@@ -223,7 +264,7 @@ variable \texttt{LABORCH\_ROOT} before importing (see
 \begin{Highlighting}[]
 \ImportTok{from}\NormalTok{ laborch }\ImportTok{import}\NormalTok{ Bank, nnls\_fit}
 
-\NormalTok{bank }\OperatorTok{=}\NormalTok{ Bank.load()                     }\CommentTok{\# first call \textasciitilde{}1 min, then cached}
+\NormalTok{bank }\OperatorTok{=}\NormalTok{ Bank.load()                     }\CommentTok{\# Bank v2: power spectra + metadata}
 \NormalTok{target\_name }\OperatorTok{=} \StringTok{"trb{-}f2{-}ord{-}mf"}          \CommentTok{\# trombone F2, mf}
 \NormalTok{target }\OperatorTok{=}\NormalTok{ bank.spectrum(target\_name)}
 
@@ -231,20 +272,32 @@ variable \texttt{LABORCH\_ROOT} before importing (see
 \NormalTok{                      exclude}\OperatorTok{=}\NormalTok{[target\_name])}
 \NormalTok{fit }\OperatorTok{=}\NormalTok{ nnls\_fit(palette, target)}
 
-\BuiltInTok{print}\NormalTok{(fit.summary(}\DecValTok{5}\NormalTok{))}
-\CommentTok{\# nnls: 62 sounds, relative error 0.529}
-\CommentTok{\#     0.1415  bcl{-}f2{-}ord{-}mf}
-\CommentTok{\#     0.1171  bcl{-}f3{-}ord{-}mf}
-\CommentTok{\#     0.0729  clb{-}f5{-}ord{-}mf}
-\CommentTok{\#     ...}
+\BuiltInTok{print}\NormalTok{(fit.summary(}\DecValTok{4}\NormalTok{))}
+\CommentTok{\# nnls: 62 sounds, relative error 0.644}
+\CommentTok{\#     0.2184  clb{-}c5{-}ord{-}mf}
+\CommentTok{\#     0.2065  clb{-}f4{-}ord{-}mf}
+\CommentTok{\#     0.1714  clb{-}g4{-}ord{-}mf}
+\CommentTok{\#     0.1095  clb{-}b4{-}ord{-}mf}
 
 \NormalTok{best3 }\OperatorTok{=}\NormalTok{ fit.top(}\DecValTok{3}\NormalTok{, refit}\OperatorTok{=}\VariableTok{True}\NormalTok{)         }\CommentTok{\# keep 3 sounds, re{-}solve on them}
-\NormalTok{best3.ranked()                         }\CommentTok{\# [(\textquotesingle{}bcl{-}f2{-}ord{-}mf\textquotesingle{}, ...), ...]}
+\NormalTok{best3.ranked()                         }\CommentTok{\# [(\textquotesingle{}clb{-}f4{-}ord{-}mf\textquotesingle{}, 0.346), ...]}
+
+\NormalTok{bank.meta[target\_name][}\StringTok{"level\_db"}\NormalTok{]     }\CommentTok{\# {-}26.3 dBFS; the full metadata row}
 
 \ImportTok{from}\NormalTok{ laborch.audio }\ImportTok{import}\NormalTok{ render\_fit   }\CommentTok{\# needs pydub + ffmpeg}
 \NormalTok{render\_fit(bank, best3, n}\OperatorTok{=}\DecValTok{3}\NormalTok{, path}\OperatorTok{=}\StringTok{"trb\_from\_clarinets.wav"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+With every bin weighted equally ($\sigma = 1$), power spectra let
+the strongest partials dominate, so the clarinets imitate
+the trombone's loud upper partials rather than its
+fundamental. Weighting by the Target's own spectrum
+(\texttt{sigma=np.maximum(target,\ target.max()*1e-4)},
+relative error per bin) brings \texttt{bcl-f2} and
+\texttt{bcl-f3} back into the top four. Choosing $\sigma$ is Phase
+2. With \texttt{Bank.load(version=1)} the example gives the
+Phase 0 answer (\texttt{bcl-f2-ord-mf} first).
 
 The notebook
 \texttt{Notebooks/2.0\_laborch\_quickstart.ipynb} walks
@@ -257,13 +310,15 @@ LabOrch/
 ├── laborch/
 │   ├── __init__.py   public API (re-exports)
 │   ├── config.py     paths and FFT constants
-│   ├── bank.py       sound names, Bank, Palette
-│   ├── spectra.py    audio loading, averaged-FFT pipeline, splitting
+│   ├── bank.py       sound names, Bank (v2 and v1), Palette
+│   ├── metadata.py   the metadata table: families, envelopes, ranges
+│   ├── build.py      rebuild Bank v2 from the recordings
+│   ├── spectra.py    audio loading, sustain detection, power and v1 spectra
 │   ├── solve.py      DOT, pseudo-inverse and NNLS decompositions; Fit
 │   ├── audio.py      gains and mixing for playback
 │   └── synth.py      synthetic tones, spectrum-to-audio resynthesis
-├── tests/            pytest suite (28 tests)
-├── docs/             this manual
+├── tests/            pytest suite (61 tests)
+├── docs/             this manual, bank_v2.md report, make_bank_report.py
 └── pyproject.toml
 \end{verbatim}
 
@@ -273,7 +328,8 @@ Names importable directly from \texttt{laborch}:
 \texttt{parse\_name}, \texttt{INSTRUMENT\_NAMES},
 \texttt{Fit}, \texttt{dot}, \texttt{nnls\_fit},
 \texttt{pinv\_fit}, \texttt{chi2}, \texttt{make\_fft},
-\texttt{spectral\_peaks}, \texttt{tone},
+\texttt{power\_spectrum}, \texttt{find\_sustain},
+\texttt{spectral\_peaks}, \texttt{FAMILIES}, \texttt{tone},
 \texttt{spectrum\_to\_audio}.
 
 Audio helpers are imported from their module
@@ -290,45 +346,232 @@ the core works without pydub.
 Constants only; no functions. Change paths here, not in
 calling code.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Name
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Value
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Name\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Value\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Meaning\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{ROOT} & repository folder, or
-\texttt{\$LABORCH\_ROOT} & base for every path below \\ \addlinespace[5pt]
-\texttt{BANK\_DIR} & \texttt{ROOT/Soundbank\_McGill} &
-McGill Bank folder \\ \addlinespace[5pt]
-\texttt{FFT\_DIR} & \texttt{BANK\_DIR/FFTBank} & current
-spectra, one \texttt{.txt} per sound \\ \addlinespace[5pt]
-\texttt{SOUND\_DIRS} & \texttt{Soundbank\_WB},
-\texttt{Soundbank\_Str}, \texttt{Soundbank\_PianoPercSax} &
-the \texttt{.aif} recordings \\ \addlinespace[5pt]
-\texttt{OLD\_FFT\_DIR} & \texttt{ROOT/OldFFTBank} & 2009
-\texttt{.nbb} spectra (reference) \\ \addlinespace[5pt]
-\texttt{MISC\_SOUNDS\_DIR} & \texttt{ROOT/MiscSounds} &
-extra Targets (trumpet mutes, multiphonics) \\ \addlinespace[5pt]
-\texttt{CACHE\_FILE} & \texttt{ROOT/.cache/fftbank.npz} &
-binary cache of the Bank \\ \addlinespace[5pt]
-\texttt{SAMPLE\_RATE} & 44100 & Hz \\ \addlinespace[5pt]
-\texttt{NFFT} & 4096 & Hamming window length (samples) \\ \addlinespace[5pt]
-\texttt{HOP} & 512 & step between windows (samples) \\ \addlinespace[5pt]
-\texttt{NBINS} & 2048 & bins kept per spectrum \\ \addlinespace[5pt]
-\texttt{BIN\_HZ} & 10.766\ldots{} & Hz per bin
-(\texttt{SAMPLE\_RATE\ /\ NFFT}) \\ \addlinespace[5pt]
-\texttt{SHAVE} & 0.15 & fraction trimmed from each end of a
-note \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+repository folder, or \texttt{\$LABORCH\_ROOT}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+base for every path below\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_DIR}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT/Soundbank\_McGill}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+McGill Bank folder\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{FFT\_DIR}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_DIR/FFTBank}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+current spectra, one \texttt{.txt} per sound\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{SOUND\_DIRS}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Soundbank\_WB}, \texttt{Soundbank\_Str},
+\texttt{Soundbank\_PianoPercSax}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+the \texttt{.aif} recordings\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{OLD\_FFT\_DIR}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT/OldFFTBank}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+2009 \texttt{.nbb} spectra (reference)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{MISC\_SOUNDS\_DIR}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT/MiscSounds}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+extra Targets (trumpet mutes, multiphonics)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{CACHE\_FILE}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT/.cache/fftbank.npz}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+binary cache of Bank v1\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_VERSION}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+2\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bank loaded by default\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_FILE}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_DIR/Bank\_v2/bank\_v2.npz}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bank v2 names and power spectra (float32)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_META}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BANK\_DIR/Bank\_v2/bank\_v2.csv}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bank v2 metadata table\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BUILD\_CACHE}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ROOT/.cache/build\_v2.npz}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+resumable state of \texttt{laborch.build}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{SAMPLE\_RATE}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+44100\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Hz\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{NFFT}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+4096\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Hamming window length (samples)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{HOP}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+512\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+step between windows (samples)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{NBINS}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+2048\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+bins kept per spectrum\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{BIN\_HZ}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+10.766\ldots{}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Hz per bin (\texttt{SAMPLE\_RATE\ /\ NFFT})\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{SHAVE}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+0.15\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v1 (and fallback): fraction trimmed from each end of a
+note\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{SMOOTH\_FRAMES}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+17\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2: level smoothed over 17 frames ($\approx$ 0.2 s) before finding
+the sustain\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{LOUD\_DB}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+10\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2: reference level = median of frames within 10 dB of the
+peak\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{SUSTAIN\_DB}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+4\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2: sustain = frames within ±4 dB of the reference\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{EDGE\_FRAMES}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+2\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2: frames dropped at each end of the sustain\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{MIN\_FRAMES}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+3\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2: fewer frames than this $\rightarrow$ fixed-trim fallback\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{DECAY\_DB}, \texttt{DECAY\_MAX\_S}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+20, 0.5\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+v2, struck sounds: window from the peak until 20 dB down, at
+most 0.5 s\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \texttt{LABORCH\_ROOT} is read once, at import time.
@@ -347,13 +590,17 @@ e.g.~\texttt{"vln"}~$\rightarrow$~\texttt{"Violin"},
 
 \textbf{\texttt{MODE\_NAMES}} ---
 \texttt{dict{[}str,\ str{]}}, performance-mode codes:
-\texttt{ord} ordinary, \texttt{mtd} muted, \texttt{nhr}
-natural harmonic, \texttt{ahr} artificial harmonic,
-\texttt{hmo} harmon mute, \texttt{stm} straight mute,
-\texttt{ped} pedal tone, \texttt{bwd} bowed, \texttt{hdm}
-hard mallet, \texttt{bbt} brass beater. Meanings are
-inferred from the codes and should be confirmed against the
-MUMS index PDFs.
+\texttt{ord} ordinary (winds: with vibrato), \texttt{mtd}
+muted, \texttt{nhr} natural harmonic, \texttt{ahr}
+artificial harmonic, \texttt{hmo} harmon mute (open),
+\texttt{stm} straight mute, \texttt{ped} pedal tone,
+\texttt{bwd} bowed, \texttt{hdm} hard mallet, \texttt{bbt}
+brass beater. Confirmed against François' Instrument Index
+spreadsheet.
+
+\textbf{\texttt{VARIANT\_NAMES}} --- \texttt{o} open string,
+\texttt{x} stopped (the same pitch fingered on the next
+string down). Variants occur only on open-string pitches.
 
 \paragraph{\texorpdfstring{\texttt{parse\_name(name)\ -\textgreater{}\ SoundName}}{parse\_name(name) -\textgreater{} SoundName}}
 
@@ -373,73 +620,134 @@ scheme.
 \paragraph{\texorpdfstring{\texttt{class\ SoundName} (frozen
 dataclass)}{class SoundName (frozen dataclass)}}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Field
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Example
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Field\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Type\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Example\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{instrument} & \texttt{str} & \texttt{"vln"} \\ \addlinespace[5pt]
-\texttt{note} & \texttt{str} & \texttt{"a"}, \texttt{"cs"}
-(sharps as \texttt{s}) \\ \addlinespace[5pt]
-\texttt{octave} & \texttt{int} & \texttt{4} \\ \addlinespace[5pt]
-\texttt{mode} & \texttt{str} & \texttt{"ord"} \\ \addlinespace[5pt]
-\texttt{dynamic} & \texttt{str} & \texttt{"pp"},
-\texttt{"mf"}, \texttt{"ff"} \\ \addlinespace[5pt]
-\texttt{string} & \texttt{int} or \texttt{None} & \texttt{2}
-in \texttt{ctb-2fs4-nhr-mf} \\ \addlinespace[5pt]
-\texttt{variant} & \texttt{str} & \texttt{"o"} /
-\texttt{"x"} in \texttt{vln-a4o-ord-mf} (probably open /
-stopped string) \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{instrument}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{"vln"}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{note}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{"a"}, \texttt{"cs"} (sharps as \texttt{s})\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{octave}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{int}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{4}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{mode}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{"ord"}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{dynamic}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{"pp"}, \texttt{"mf"}, \texttt{"ff"}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{string}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{int} or \texttt{None}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{2} in \texttt{ctb-2fs4-nhr-mf}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{variant}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{"o"} (open string) / \texttt{"x"} (stopped) in
+\texttt{vln-a4o-ord-mf}\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \begin{longtable}[]{@{}ll@{}}
-\toprule\noalign{}
-Property & Returns \\ \addlinespace[5pt]
-\midrule\noalign{}
+\toprule
+Property & Returns\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{pitch} & \texttt{"a4"} \\ \addlinespace[5pt]
-\texttt{midi} & MIDI number, C4 = 60, A4 = 69 \\ \addlinespace[5pt]
+\texttt{pitch} & \texttt{"a4"}\tabularnewline
+\texttt{midi} & MIDI number, C4 = 60, A4 = 69\tabularnewline
 \texttt{freq} & equal-tempered fundamental in Hz, A4 =
-440 \\ \addlinespace[5pt]
-\texttt{str(s)} & the original name \\ \addlinespace[5pt]
+440\tabularnewline
+\texttt{str(s)} & the original name\tabularnewline
+\bottomrule
 \end{longtable}
 
 \paragraph{\texorpdfstring{\texttt{class\ Palette}
 (dataclass)}{class Palette (dataclass)}}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Attribute
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Attribute\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Type\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Meaning\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{names} & \texttt{list{[}str{]}} & sound names, one
-per column \\ \addlinespace[5pt]
-\texttt{matrix} & \texttt{ndarray\ (2048,\ n)} & spectra as
-\textbf{columns} (the basis X of RH2009) \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{names}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{list{[}str{]}}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+sound names, one per column\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{matrix}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ndarray\ (2048,\ n)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+spectra as \textbf{columns} (the basis X of RH2009)\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \texttt{len(palette)} is the number of sounds. Palettes are
@@ -453,93 +761,207 @@ All Bank spectra, one \textbf{row} per sound, rows sorted by
 name.
 
 \textbf{Constructor}
-\texttt{Bank(names,\ spectra,\ source="")} ---
-\texttt{spectra} must have shape
-\texttt{(len(names),\ 2048)}. Every name must parse with
-\texttt{parse\_name}.
+\texttt{Bank(names,\ spectra,\ source="",\ kind="magnitude",\ version=1,\ meta=None)}
+--- \texttt{spectra} must have shape
+\texttt{(len(names),\ 2048)}; every name must parse with
+\texttt{parse\_name}; \texttt{kind} is \texttt{"power"} or
+\texttt{"magnitude"}.
 
 \textbf{Class methods}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Method
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Description
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Method\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Description\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{Bank.load(fft\_dir=FFT\_DIR,\ use\_cache=True,\ cache\_file=CACHE\_FILE)}
-& Loads the current Bank from \texttt{FFTBank/*.txt}. The
-first call reads 1,515 text files (about a minute on
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{Bank.load(version=2,\ normalize=None,\ **kw)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Loads Bank v2 (default) or v1. \texttt{normalize="unit"}
+divides every spectrum by its sum, keeping only its shape.
+Other keywords go to \texttt{load\_v2} /
+\texttt{load\_v1}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{Bank.load\_v2(path=BANK\_FILE,\ meta\_path=BANK\_META)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Bank v2: power spectra at recorded level
+(\texttt{kind="power"}) and the metadata table. Raises
+\texttt{FileNotFoundError} if \texttt{bank\_v2.npz} is
+missing (build it with
+\texttt{python\ -m\ laborch.build}).\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{Bank.load\_v1(fft\_dir=FFT\_DIR,\ use\_cache=True,\ cache\_file=CACHE\_FILE)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Bank v1 from \texttt{FFTBank/*.txt} (unit-sum magnitudes).
+The first call reads 1,515 text files (about a minute on
 Dropbox) and writes \texttt{.cache/fftbank.npz}; later calls
-load the cache in about a second. The cache is used only if
-it holds exactly the same set of names; pass
-\texttt{use\_cache=False} to force a rebuild. \\ \addlinespace[5pt]
-\texttt{Bank.load\_old(nbb\_dir=OLD\_FFT\_DIR)} & Loads the
-2009 \texttt{.nbb} spectra (2,048 float32 values each). One
-malformed name (\texttt{obo-f5-c6.nbb}) is skipped with a
-warning. Old instrument codes differ (\texttt{cla},
-\texttt{hrn}, \texttt{tpt}, \texttt{mar}, \texttt{btr}). \\ \addlinespace[5pt]
+load the cache in about a second.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{Bank.load\_old(nbb\_dir=OLD\_FFT\_DIR)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Loads the 2009 \texttt{.nbb} spectra (2,048 float32 values
+each). One malformed name (\texttt{obo-f5-c6.nbb}) is
+skipped with a warning. Old instrument codes differ
+(\texttt{cla}, \texttt{hrn}, \texttt{tpt}, \texttt{mar},
+\texttt{btr}).\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \textbf{Attributes}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Attribute
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Attribute\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Meaning\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{names} & sorted list of sound names \\ \addlinespace[5pt]
-\texttt{spectra} & \texttt{ndarray\ (n\_sounds,\ 2048)} \\ \addlinespace[5pt]
-\texttt{info} & \texttt{dict{[}name,\ SoundName{]}} \\ \addlinespace[5pt]
-\texttt{source} & folder the Bank was read from \\ \addlinespace[5pt]
-\texttt{instruments} & sorted list of instrument codes
-present (property) \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{names}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+sorted list of sound names\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{spectra}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{ndarray\ (n\_sounds,\ 2048)}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{info}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{dict{[}name,\ SoundName{]}}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{source}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+file or folder the Bank was read from\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{kind}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{"power"} (v2) or \texttt{"magnitude"} (v1,
+2009)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{version}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+2 or 1\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{meta}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{dict{[}name,\ dict{]}}, the metadata row of each
+sound (v2; empty for v1)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{instruments}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+sorted list of instrument codes present (property)\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \textbf{Methods}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Method
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Returns
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Description
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Method\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Returns\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Description\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{len(bank)} & \texttt{int} & number of sounds \\ \addlinespace[5pt]
-\texttt{name\ in\ bank} & \texttt{bool} & membership \\ \addlinespace[5pt]
-\texttt{spectrum(name)} & \texttt{ndarray\ (2048,)} & one
-sound's spectrum (a view; copy before modifying) \\ \addlinespace[5pt]
-\texttt{select(instruments=None,\ modes=None,\ dynamics=None,\ midi\_range=None,\ exclude=())}
-& \texttt{Palette} & builds a Palette. Each filter is
-optional; \texttt{midi\_range=(lo,\ hi)} is inclusive;
-\texttt{exclude} removes named sounds, e.g.~the Target.
-Raises \texttt{ValueError} if nothing matches. \\ \addlinespace[5pt]
-\texttt{sound\_path(name)} & \texttt{Path} & the
-\texttt{.aif} recording for a sound;
-\texttt{FileNotFoundError} if absent \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{len(bank)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{int}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+number of sounds\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{name\ in\ bank}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{bool}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+membership\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{spectrum(name)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ndarray\ (2048,)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+one sound's spectrum (a view; copy before modifying)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{select(instruments=None,\ modes=None,\ dynamics=None,\ midi\_range=None,\ exclude=(),\ families=None)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Palette}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+builds a Palette. Each filter is optional and takes a list
+or a single string; \texttt{midi\_range=(lo,\ hi)} is
+inclusive; \texttt{exclude} removes named sounds, e.g.~the
+Target; \texttt{families} selects by family (see 5.7) and
+combines with \texttt{instruments} as an intersection.
+Raises \texttt{ValueError} if nothing matches.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{level\_db(name)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{float}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+10 log₁₀ of the spectrum's sum: the sound's level in dBFS
+for v2\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{sound\_path(name)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Path}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+the \texttt{.aif} recording for a sound;
+\texttt{FileNotFoundError} if absent\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \begin{Shaded}
@@ -558,8 +980,95 @@ DC). Use it as the x-axis when plotting spectra.
 \subsubsection{\texorpdfstring{5.3
 \texttt{laborch.spectra}}{5.3 laborch.spectra}}
 
-The averaged-spectrum pipeline used to build the Bank, plus
-audio I/O. Functions marked \textdagger{} need pydub and ffmpeg.
+The averaged-spectrum pipelines used to build the Banks,
+plus audio I/O. Functions marked \textdagger{} need pydub and ffmpeg.
+
+\paragraph{\texorpdfstring{Bank v2:
+\texttt{power\_spectrum(x,\ envelope="sustained",\ region=None)\ -\textgreater{}\ (ndarray,\ Sustain)}}{Bank v2: power\_spectrum(x, envelope="sustained", region=None) -\textgreater{} (ndarray, Sustain)}}
+
+The Bank v2 recipe:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  cut \texttt{x} (mono, scaled to −1..1; see
+  \texttt{load\_float}) into 4,096-sample Hamming frames at
+  hop 512;
+\item
+  take each frame's one-sided power spectrum, scaled so it
+  sums to the frame's mean square (Parseval);
+\item
+  choose the frames to use with \texttt{find\_sustain} (or
+  the \texttt{region} \texttt{(start\_s,\ end\_s)} you
+  give);
+\item
+  average the frame powers.
+\end{enumerate}
+
+\texttt{10*log10(spec.sum())} is the level of the region in
+dBFS, and spectra of uncorrelated sounds add. Returns the
+spectrum and a \texttt{Sustain}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ laborch.spectra }\ImportTok{import}\NormalTok{ power\_of\_file}
+\NormalTok{target, sus }\OperatorTok{=}\NormalTok{ power\_of\_file(}\StringTok{"my\_target.wav"}\NormalTok{)      }\CommentTok{\# a Target in Bank v2 units}
+\NormalTok{sus.start\_s, sus.end\_s, sus.level\_db, sus.method}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{\texorpdfstring{\texttt{find\_sustain(ms,\ envelope="sustained")\ -\textgreater{}\ Sustain}}{find\_sustain(ms, envelope="sustained") -\textgreater{} Sustain}}
+
+Chooses frames from their mean-square levels \texttt{ms}
+(from \texttt{frame\_power}).
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{"sustained"} (bowed, blown): smooth the dB level
+  over \texttt{SMOOTH\_FRAMES} ($\approx$ 0.2 s, so vibrato and
+  tremolo do not break it up); take as reference the median
+  of frames within \texttt{LOUD\_DB} of the smoothed peak;
+  keep the longest run within ±\texttt{SUSTAIN\_DB} of it,
+  less \texttt{EDGE\_FRAMES} at each end. Fewer than
+  \texttt{MIN\_FRAMES} $\rightarrow$ the v1 fixed 15\% trim
+  (\texttt{method="trim"}).
+\item
+  \texttt{"decaying"} (struck): from the loudest frame until
+  \texttt{DECAY\_DB} below it, at most
+  \texttt{DECAY\_MAX\_S}.
+\end{itemize}
+
+Which envelope a Bank sound has is in its metadata
+(\texttt{metadata.envelope\_class}).
+
+\paragraph{\texorpdfstring{\texttt{class\ Sustain}
+(dataclass)}{class Sustain (dataclass)}}
+
+\texttt{first}, \texttt{last} (frame indices, inclusive),
+\texttt{method} (\texttt{"sustain"}, \texttt{"decay"},
+\texttt{"trim"}, \texttt{"given"}), \texttt{level\_db}
+(mean-square level of the region, dBFS), \texttt{peak\_db}
+(loudest frame); properties \texttt{n\_frames},
+\texttt{start\_s}, \texttt{end\_s} (from the start of the
+first window to the end of the last).
+
+\paragraph{\texorpdfstring{\texttt{power\_of\_file(path,\ envelope="sustained",\ region=None)}
+†, \texttt{load\_float(path)} †,
+\texttt{segment\_float(segment)}~\textsuperscript{\textdagger}}{power\_of\_file(path, envelope="sustained", region=None) †, load\_float(path) †, segment\_float(segment) (needs pydub)}}
+
+\texttt{power\_spectrum} of a file; mono samples scaled to
+−1..1.
+
+\paragraph{\texorpdfstring{\texttt{frame\_power(x)\ -\textgreater{}\ (P,\ ms)}
+and
+\texttt{frames(x)}}{frame\_power(x) -\textgreater{} (P, ms) and frames(x)}}
+
+Per-frame power spectra \texttt{(n\_frames,\ 2048)} and mean
+squares; the frame matrix.
+
+\paragraph{Bank v1}
 
 \paragraph{\texorpdfstring{\texttt{make\_fft(samples,\ shave=0.15,\ normalize=True)\ -\textgreater{}\ ndarray}}{make\_fft(samples, shave=0.15, normalize=True) -\textgreater{} ndarray}}
 
@@ -676,78 +1185,94 @@ Sum of squared, optionally $\sigma$-weighted, residuals.
 The result of any solver: a Recommendation before
 playability rules.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Attribute
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Attribute & Meaning\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{names} & Palette sound names \\ \addlinespace[5pt]
+\texttt{names} & Palette sound names\tabularnewline
 \texttt{weights} & \texttt{ndarray}, one weight per name
-(same order) \\ \addlinespace[5pt]
-\texttt{target} & the Target spectrum \\ \addlinespace[5pt]
-\texttt{matrix} & the Palette matrix used \\ \addlinespace[5pt]
+(same order)\tabularnewline
+\texttt{target} & the Target spectrum\tabularnewline
+\texttt{matrix} & the Palette matrix used\tabularnewline
 \texttt{method} & \texttt{"nnls"}, \texttt{"pinv"},
 \texttt{"dot"}, \texttt{"dot-cos"}, or \texttt{"nnls/top3"}
-etc. \\ \addlinespace[5pt]
-\texttt{sigma} & the $\sigma$ used, or \texttt{None} \\ \addlinespace[5pt]
+etc.\tabularnewline
+\texttt{sigma} & the $\sigma$ used, or \texttt{None}\tabularnewline
+\bottomrule
 \end{longtable}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Property
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Returns
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Property & Returns\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
 \texttt{model} & fitted spectrum
-\texttt{matrix\ @\ weights} \\ \addlinespace[5pt]
-\texttt{chi2} & $\chi^2$ of the fit ($\sigma$-weighted if $\sigma$ was given) \\ \addlinespace[5pt]
+\texttt{matrix\ @\ weights}\tabularnewline
+\texttt{chi2} & $\chi^2$ of the fit ($\sigma$-weighted if $\sigma$ was
+given)\tabularnewline
 \texttt{relative\_error} & $\lVert T - \text{model} \rVert / \lVert T \rVert$, unweighted; 0
-is perfect \\ \addlinespace[5pt]
-\texttt{order} & indices sorted by weight, largest first \\ \addlinespace[5pt]
+is perfect\tabularnewline
+\texttt{order} & indices sorted by weight, largest
+first\tabularnewline
+\bottomrule
 \end{longtable}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Method
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Returns
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Description
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Method\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Returns\strut
+\end{minipage} &
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Description\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{ranked(n=None,\ nonzero=True,\ rtol=0.0)} &
-\texttt{list{[}(name,\ weight){]}} & largest first; with
-\texttt{nonzero}, drops weights $\le$ \texttt{rtol}~$\times$~\texttt{max} (use
-\texttt{rtol=1e-9} to hide round-off) \\ \addlinespace[5pt]
-\texttt{top(n,\ refit=False)} & \texttt{Fit} & keeps the n
-largest weights. \texttt{refit=False} keeps their values (as
-the 2020 mock-up did); \texttt{refit=True} re-solves NNLS on
-those n sounds, which never increases $\chi^2$ \\ \addlinespace[5pt]
-\texttt{kept\_fraction(n)} & \texttt{float} & share of total
-weight in the top n \\ \addlinespace[5pt]
-\texttt{summary(n=10)} & \texttt{str} & readable report \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{ranked(n=None,\ nonzero=True,\ rtol=0.0)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{list{[}(name,\ weight){]}}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+largest first; with \texttt{nonzero}, drops weights $\le$
+\texttt{rtol}~$\times$~\texttt{max} (use \texttt{rtol=1e-9} to hide
+round-off)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{top(n,\ refit=False)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{Fit}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+keeps the n largest weights. \texttt{refit=False} keeps
+their values (as the 2020 mock-up did); \texttt{refit=True}
+re-solves NNLS on those n sounds, which never increases
+$\chi^2$\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{kept\_fraction(n)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{float}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+share of total weight in the top n\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{summary(n=10)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+\texttt{str}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+readable report\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 \subsubsection{\texorpdfstring{5.5
@@ -755,23 +1280,30 @@ weight in the top n \\ \addlinespace[5pt]
 
 Needs pydub and ffmpeg (except \texttt{weights\_to\_db}).
 
-\paragraph{\texorpdfstring{\texttt{weights\_to\_db(weights,\ floor\_db=-60.0)\ -\textgreater{}\ ndarray}}{weights\_to\_db(weights, floor\_db=-60.0) -\textgreater{} ndarray}}
+\paragraph{\texorpdfstring{\texttt{weights\_to\_db(weights,\ floor\_db=-60.0,\ kind="magnitude",\ relative=True)\ -\textgreater{}\ ndarray}}{weights\_to\_db(weights, floor\_db=-60.0, kind="magnitude", relative=True) -\textgreater{} ndarray}}
 
-Gain of each weight relative to the largest: $20\log_{10}(w / w_{\max})$. Zero weights get \texttt{floor\_db}. Approximate,
-because Bank spectra are normalized and do not carry the
-recordings' own loudness.
+Gain in dB of each weight: 20 log₁₀ w for magnitude spectra
+(v1), 10 log₁₀ w for power spectra (v2). With
+\texttt{relative=True} the largest weight is 0 dB; with
+\texttt{relative=False} the gain is relative to each
+recording's own level, which is what a v2 weight means. Zero
+weights get \texttt{floor\_db}.
 
 \paragraph{\texorpdfstring{\texttt{mix(bank,\ names,\ gains\_db)\ -\textgreater{}\ AudioSegment}}{mix(bank, names, gains\_db) -\textgreater{} AudioSegment}}
 
 Overlays the named Bank recordings, each shifted by its gain
 in dB. The result is as long as the longest sound.
 
-\paragraph{\texorpdfstring{\texttt{render\_fit(bank,\ fit,\ n=8,\ path=None)\ -\textgreater{}\ AudioSegment}}{render\_fit(bank, fit, n=8, path=None) -\textgreater{} AudioSegment}}
+\paragraph{\texorpdfstring{\texttt{render\_fit(bank,\ fit,\ n=8,\ path=None,\ headroom\_db=0.0)\ -\textgreater{}\ AudioSegment}}{render\_fit(bank, fit, n=8, path=None, headroom\_db=0.0) -\textgreater{} AudioSegment}}
 
-Mixes the top-n sounds of a \texttt{Fit} at their relative
-gains; writes a file if \texttt{path} is given (format from
-its extension, e.g.~\texttt{.wav}, \texttt{.mp3}). In
-Jupyter, the returned segment plays inline.
+Mixes the top-n sounds of a \texttt{Fit}; writes a file if
+\texttt{path} is given (format from its extension,
+e.g.~\texttt{.wav}, \texttt{.mp3}). In Jupyter, the returned
+segment plays inline. With Bank v2 the gains are absolute,
+10 log₁₀ w on each recording; if the loudest would exceed
+\texttt{headroom\_db}, all gains are lowered together,
+keeping the balance. With Bank v1 the gains are relative to
+the largest weight.
 
 \subsubsection{\texorpdfstring{5.6
 \texttt{laborch.synth}}{5.6 laborch.synth}}
@@ -788,31 +1320,63 @@ A sum of sine partials at multiples of \texttt{f0}:
   \qquad \lambda = \texttt{decay}
 \]
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Parameter
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Meaning
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Parameter\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Meaning\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{f0} & fundamental in Hz;
-\texttt{parse\_name("mrb-c3-ord-mf").freq} gives 130.81 \\ \addlinespace[5pt]
-\texttt{partials} & multiples of \texttt{f0}; need not be
-integers (e.g.~3.9 for a real bar) \\ \addlinespace[5pt]
-\texttt{amps} & amplitude of each partial (default all 1) \\ \addlinespace[5pt]
-\texttt{seconds}, \texttt{sr} & duration and sample rate \\ \addlinespace[5pt]
-\texttt{decay} & exponential decay rate in 1/s; 0 =
-steady \\ \addlinespace[5pt]
-\texttt{phases} & starting phase of each partial in radians
-(default 0) \\ \addlinespace[5pt]
-\texttt{peak} & largest absolute sample after scaling;
-\texttt{2**15\ -\ 1} gives 16-bit scale \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{f0}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+fundamental in Hz;
+\texttt{parse\_name("mrb-c3-ord-mf").freq} gives
+130.81\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{partials}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+multiples of \texttt{f0}; need not be integers (e.g.~3.9 for
+a real bar)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{amps}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+amplitude of each partial (default all 1)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{seconds}, \texttt{sr}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+duration and sample rate\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{decay}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+exponential decay rate in 1/s; 0 = steady\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{phases}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+starting phase of each partial in radians (default 0)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{peak}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+largest absolute sample after scaling; \texttt{2**15\ -\ 1}
+gives 16-bit scale\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 Raises \texttt{ValueError} if the lists differ in length or
@@ -820,12 +1384,13 @@ a partial reaches the Nyquist frequency (22,050 Hz).
 
 \paragraph{\texorpdfstring{\texttt{spectrum\_to\_audio(spec,\ seconds=1.0,\ sr=44100,\ seed=0,\ threshold=1e-4,\ peak=1.0)\ -\textgreater{}\ ndarray}}{spectrum\_to\_audio(spec, seconds=1.0, sr=44100, seed=0, threshold=1e-4, peak=1.0) -\textgreater{} ndarray}}
 
-Additive resynthesis of a magnitude spectrum. Every bin
-\emph{k} above \texttt{threshold} $\times$ the maximum becomes a
-sine at $k \times 10.77$~Hz with amplitude
-\texttt{spec{[}k{]}} and a random phase (\texttt{seed} makes
-it repeatable). Works on Bank spectra, \texttt{Fit.model}
-and \texttt{make\_fft} output.
+Additive resynthesis of a magnitude spectrum (for a v2 power
+spectrum, pass \texttt{np.sqrt(spec)}). Every bin \emph{k}
+above \texttt{threshold} $\times$ the maximum becomes a sine at
+$k \times 10.77$~Hz with amplitude \texttt{spec{[}k{]}} and
+a random phase (\texttt{seed} makes it repeatable). Works on
+Bank spectra, \texttt{Fit.model} and \texttt{make\_fft}
+output.
 
 Because the Bank stores magnitudes only, the phases are
 invented: the result keeps the timbre (which partials, how
@@ -842,6 +1407,180 @@ a cosine similarity of about 0.97.
 \end{Highlighting}
 \end{Shaded}
 
+\subsubsection{\texorpdfstring{5.7 \texttt{laborch.metadata}
+and
+\texttt{laborch.build}}{5.7 laborch.metadata and laborch.build}}
+
+\paragraph{The metadata table}
+
+\texttt{Soundbank\_McGill/Bank\_v2/bank\_v2.csv}, one row
+per sound, also available as \texttt{bank.meta{[}name{]}}.
+Readable without laborch (spreadsheet, pandas).
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Column\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Meaning\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{name}, \texttt{instrument},
+\texttt{instrument\_name}, \texttt{family}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+sound and instrument; family from \texttt{FAMILIES}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{envelope}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{sustained} or \texttt{decaying} (struck: piano,
+marimba, xylophone, glockenspiel, crotales, tubular bells,
+hard-mallet vibraphone)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{note}, \texttt{octave}, \texttt{pitch},
+\texttt{midi}, \texttt{freq\_hz}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+pitch; \texttt{freq\_hz} equal-tempered, A4 = 440\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{string}, \texttt{variant},
+\texttt{variant\_name}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+string number; \texttt{o} open / \texttt{x} stopped\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{mode}, \texttt{mode\_name}, \texttt{dynamic}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+performance mode and dynamic\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{sub\_bank}, \texttt{aif}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+McGill sub-bank and the recording's path relative to
+\texttt{ROOT}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{duration\_s}, \texttt{sustain\_start\_s},
+\texttt{sustain\_end\_s}, \texttt{n\_frames},
+\texttt{method}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+the note and the analysed region\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{level\_db}, \texttt{peak\_db}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+mean-square level of the region and loudest frame,
+dBFS\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{similarity\_v1}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+cosine between √(v2 power) and the v1 spectrum: low = the
+region changed a lot\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\paragraph{\texorpdfstring{\texttt{laborch.metadata}}{laborch.metadata}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Name\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Description\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{FAMILIES}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{dict{[}family,\ list\ of\ codes{]}}: strings,
+flutes, double reeds, clarinets, saxophones, brass,
+keyboard, percussion\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{FAMILY\_OF}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+code $\rightarrow$ family\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{envelope\_class(instrument,\ mode)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{"sustained"} or \texttt{"decaying"}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{describe(name)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+the name-derived columns of a row\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{read\_table(path=BANK\_META)},
+\texttt{write\_table(rows,\ path=BANK\_META)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+CSV I/O, numbers converted\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{ranges(rows)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{(instrument,\ mode)\ →\ (lowest\ MIDI,\ highest\ MIDI)};
+Phase 2 uses these as Palette filters\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{spreadsheet\_names(folder)}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+names listed in François' spreadsheets (needs
+openpyxl)\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ laborch.metadata }\ImportTok{import}\NormalTok{ ranges}
+\NormalTok{ranges(bank.meta.values())[(}\StringTok{"vln"}\NormalTok{, }\StringTok{"ord"}\NormalTok{)]     }\CommentTok{\# (55, 96): g3{-}c7}
+\end{Highlighting}
+\end{Shaded}
+
+\paragraph{\texorpdfstring{\texttt{laborch.build}}{laborch.build}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python}\NormalTok{ {-}m laborch.build            \# resumable: rerun until it says it wrote the files}
+\ExtensionTok{python}\NormalTok{ {-}m laborch.build {-}{-}fresh    \# start again (after changing the analysis)}
+\end{Highlighting}
+\end{Shaded}
+
+Analyses every \texttt{.aif} in \texttt{SOUND\_DIRS} (about
+4 minutes), saving progress to \texttt{BUILD\_CACHE} after
+every 50 sounds, then writes \texttt{bank\_v2.npz} and
+\texttt{bank\_v2.csv}. \texttt{NAME\_FIXES} maps the
+recording \texttt{tpt-fs3-hmo-mf} (a typo) to
+\texttt{tpc-fs3-hmo-mf}.
+\texttt{python\ docs/make\_bank\_report.py} then regenerates
+the report \texttt{docs/bank\_v2.md} and its figure.
+
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsection{6. Recipes}
@@ -850,8 +1589,8 @@ a cosine similarity of about 0.97.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{from}\NormalTok{ laborch.spectra }\ImportTok{import}\NormalTok{ fft\_of\_file}
-\NormalTok{target }\OperatorTok{=}\NormalTok{ fft\_of\_file(}\StringTok{"my\_target.wav"}\NormalTok{)         }\CommentTok{\# 44.1 kHz, steady 1–2 s}
+\ImportTok{from}\NormalTok{ laborch.spectra }\ImportTok{import}\NormalTok{ power\_of\_file}
+\NormalTok{target, sus }\OperatorTok{=}\NormalTok{ power\_of\_file(}\StringTok{"my\_target.wav"}\NormalTok{)  }\CommentTok{\# 44.1 kHz; sustain found automatically}
 \NormalTok{fit }\OperatorTok{=}\NormalTok{ nnls\_fit(bank.select(instruments}\OperatorTok{=}\NormalTok{[}\StringTok{"flu"}\NormalTok{, }\StringTok{"clb"}\NormalTok{, }\StringTok{"obo"}\NormalTok{]), target)}
 \end{Highlighting}
 \end{Shaded}
@@ -867,14 +1606,15 @@ a cosine similarity of about 0.97.
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{A synthetic Target} (notebook 2.1)
+\textbf{A synthetic Target} (notebook 2.1, on Bank v1)
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \ImportTok{from}\NormalTok{ laborch.synth }\ImportTok{import}\NormalTok{ tone}
+\NormalTok{bank1 }\OperatorTok{=}\NormalTok{ Bank.load(version}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
 \NormalTok{f0 }\OperatorTok{=}\NormalTok{ parse\_name(}\StringTok{"mrb{-}c3{-}ord{-}mf"}\NormalTok{).freq}
 \NormalTok{spec }\OperatorTok{=}\NormalTok{ make\_fft(tone(f0, partials}\OperatorTok{=}\NormalTok{[}\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{10}\NormalTok{], amps}\OperatorTok{=}\NormalTok{[}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.25}\NormalTok{]))}
-\BuiltInTok{print}\NormalTok{(nnls\_fit(bank.select(instruments}\OperatorTok{=}\NormalTok{[}\StringTok{"mrb"}\NormalTok{]), spec).summary(}\DecValTok{3}\NormalTok{))}
+\BuiltInTok{print}\NormalTok{(nnls\_fit(bank1.select(instruments}\OperatorTok{=}\NormalTok{[}\StringTok{"mrb"}\NormalTok{]), spec).summary(}\DecValTok{3}\NormalTok{))}
 \CommentTok{\# mrb{-}c3 0.657, mrb{-}c5 0.298, mrb{-}e6 0.148: a marimba C3 doubled}
 \CommentTok{\# on its 4th (C5) and 10th (about E6) partials}
 \end{Highlighting}
@@ -885,8 +1625,19 @@ a cosine similarity of about 0.97.
 \begin{Shaded}
 \begin{Highlighting}[]
 \ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
-\NormalTok{sigma }\OperatorTok{=}\NormalTok{ np.maximum(target, }\FloatTok{1e{-}6}\NormalTok{)              }\CommentTok{\# sigma\_i proportional to T\_i}
+\NormalTok{sigma }\OperatorTok{=}\NormalTok{ np.maximum(target, target.}\BuiltInTok{max}\NormalTok{() }\OperatorTok{*} \FloatTok{1e{-}4}\NormalTok{)   }\CommentTok{\# sigma\_i proportional to T\_i}
 \NormalTok{fit\_rel }\OperatorTok{=}\NormalTok{ nnls\_fit(palette, target, sigma}\OperatorTok{=}\NormalTok{sigma)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Select by family, or check the analysis of one
+sound}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pal }\OperatorTok{=}\NormalTok{ bank.select(families}\OperatorTok{=}\NormalTok{[}\StringTok{"flutes"}\NormalTok{, }\StringTok{"clarinets"}\NormalTok{], modes}\OperatorTok{=}\StringTok{"ord"}\NormalTok{)}
+\NormalTok{row }\OperatorTok{=}\NormalTok{ bank.meta[}\StringTok{"vln{-}a4x{-}ord{-}mf"}\NormalTok{]}
+\NormalTok{row[}\StringTok{"sustain\_start\_s"}\NormalTok{], row[}\StringTok{"sustain\_end\_s"}\NormalTok{], row[}\StringTok{"level\_db"}\NormalTok{], row[}\StringTok{"method"}\NormalTok{]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -909,7 +1660,7 @@ keep the best weight per instrument and refit:
 \begin{Highlighting}[]
 \NormalTok{best }\OperatorTok{=}\NormalTok{ \{\}}
 \ControlFlowTok{for}\NormalTok{ name, w }\KeywordTok{in}\NormalTok{ fit.ranked():}
-\NormalTok{    best.setdefault(bank.info[name].instrument, name)}
+\NormalTok{    best.setdefault(bank.meta[name][}\StringTok{"instrument"}\NormalTok{], name)}
 \ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
 \ImportTok{from}\NormalTok{ laborch }\ImportTok{import}\NormalTok{ Palette}
 \NormalTok{pal1 }\OperatorTok{=}\NormalTok{ Palette(}\BuiltInTok{list}\NormalTok{(best.values()),}
@@ -926,20 +1677,34 @@ keep the best weight per instrument and refit:
   \textbf{Sound names} --- \texttt{inst-pitch-mode-dyn},
   e.g.~\texttt{vln-a4x-ord-mf}. Sharps as \texttt{s}
   (\texttt{cs4}); optional string number before the pitch
-  (\texttt{ctb-1b4-nhr-mf}); optional one-letter variant
-  after it (\texttt{a4o}, \texttt{a4x}).
+  (\texttt{ctb-1b4-nhr-mf}); optional variant after it
+  (\texttt{a4o} open string, \texttt{a4x} stopped).
 \item
-  \textbf{Spectra} --- 2,048 bins, bin \emph{k} centred at
-  $k \times 10.77$~Hz (bin 0 = DC, last bin $\approx$ 22 kHz);
-  magnitude, not power; normalized to unit sum.
+  \textbf{Spectra, Bank v2 (default)} --- 2,048 bins, bin
+  \emph{k} at $k \times 10.77$~Hz (bin 0 = DC, last bin $\approx$ 22
+  kHz); \textbf{power}, averaged over the detected sustain
+  (or the first $\le$ 0.5 s of a struck sound); samples scaled
+  to −1..1; each spectrum sums to the mean square of its
+  region, so \texttt{10\ log₁₀(sum)} is its level in dBFS.
+  Stored as float32.
+\item
+  \textbf{Spectra, Bank v1} --- same bins; magnitude,
+  √(Σ\textbar X\textbar²)/n over the middle 70\% of the
+  note, normalized to unit sum.
+\item
+  \textbf{Levels} --- v2 keeps the \emph{recorded} level,
+  which is not the playing level: piano ff is about 4 dB
+  quieter than pp in the McGill tracks.
+  \texttt{Bank.load(normalize="unit")} removes levels.
 \item
   \textbf{Bank coverage} --- 1,515 sounds; nearly all
   \texttt{mf}, with \texttt{pp} and \texttt{ff} only for
-  piano.
+  piano; 29 glockenspiel notes listed in the spreadsheets
+  were never split out (see \texttt{docs/bank\_v2.md}).
 \item
-  \textbf{Units of weights} --- because spectra are
-  unit-sum, a weight is the sound's share of the fitted
-  spectrum, not a playing level.
+  \textbf{Units of weights} --- v2: a power gain on the
+  recording (1 = as recorded). v1: a share of the fitted
+  spectrum.
 \end{itemize}
 
 \subsection{8. Testing}
@@ -947,40 +1712,83 @@ keep the best weight per instrument and refit:
 \begin{Shaded}
 \begin{Highlighting}[]
 \BuiltInTok{cd}\NormalTok{ LabOrch}
-\ExtensionTok{pytest}            \CommentTok{\# 28 tests, about 15 s once the Bank cache exists}
-\ExtensionTok{pytest} \AttributeTok{{-}v} \AttributeTok{{-}k}\NormalTok{ ravel}
+\ExtensionTok{pytest}\NormalTok{            \# 61 tests, about 10–15 s}
+\ExtensionTok{pytest}\NormalTok{ {-}v {-}k ravel}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Test file
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Checks
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Test file\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Checks\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{test\_names.py} & name parsing, MIDI numbers, every
-Bank name parses, unit normalization \\ \addlinespace[5pt]
-\texttt{test\_solve.py} & NNLS recovers an exact synthetic
-mixture, $\sigma$ weighting, \texttt{top}/refit, dB gains \\ \addlinespace[5pt]
-\texttt{test\_spectra.py} & \texttt{make\_fft} rebuilds four
-stored Bank spectra from their \texttt{.aif} files;
-pure-tone peak \\ \addlinespace[5pt]
-\texttt{test\_regression\_notebook\_1\_5.py} & violin A4
-from flutes matches notebook 1.5 to three decimals;
-pseudo-inverse goes negative, NNLS does not \\ \addlinespace[5pt]
-\texttt{test\_synth.py} & \texttt{tone} partials, amplitudes
-and decay; the synthetic C3 decomposes into marimba C3 + C5
-+ E6; spectrum-to-audio round trip \\ \addlinespace[5pt]
-\texttt{test\_regression\_ravel.py} & RH2009 \emph{Daphnis
-et Chloé} example: the woodwind chord is closer to the cup
-mute than the straight mute \\ \addlinespace[5pt]
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_names.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+name parsing, MIDI numbers, every Bank name parses (v1 and
+v2), v1 unit normalization\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_metadata.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+families, envelope classes, a complete row per sound,
+variants on open strings, ranges, v2 regions close to v1,
+\texttt{select(families=...)}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_power.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Parseval level, powers add, sustain and decay detection on
+synthetic notes, fallback, given regions, rebuilding four v2
+spectra from their \texttt{.aif} files,
+\texttt{normalize="unit"}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_solve.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+NNLS recovers an exact synthetic mixture, $\sigma$ weighting,
+\texttt{top}/refit, dB gains\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_spectra.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{make\_fft} rebuilds four stored v1 spectra from
+their \texttt{.aif} files; pure-tone peak\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_regression\_notebook\_1\_5.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+violin A4 from flutes matches notebook 1.5 to three
+decimals; pseudo-inverse goes negative, NNLS does not\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_synth.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{tone} partials, amplitudes and decay; the synthetic
+C3 decomposes into marimba C3 + C5 + E6; spectrum-to-audio
+round trip\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{test\_regression\_ravel.py}\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+RH2009 \emph{Daphnis et Chloé} example, on v1 and v2: the
+woodwind chord is closer to the cup mute than the straight
+mute\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
 Audio tests are skipped automatically if pydub or ffmpeg is
@@ -989,34 +1797,56 @@ absent.
 
 \subsection{9. Known limitations and roadmap}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Limitation
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Planned in
-\end{minipage} \\ \addlinespace[5pt]
-\midrule\noalign{}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Limitation\strut
+\end{minipage} &
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Planned in\strut
+\end{minipage}\tabularnewline
+\midrule
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
-Spectra are unit-normalized magnitudes; loudness is lost and
-mixing is only approximately linear & Phase 1 (power
-spectra, loudness model) \\
-Fixed 15\% trim instead of detecting the sustain & Phase
-1 \\
-Every frequency bin counts equally ($\sigma = 1$); plain $\chi^2$ nearly
-ties the two mutes in the Ravel test while shape measures
-prefer the cup mute & Phase 2 (choice of $\sigma$) \\
-No playability: several notes may be assigned to one player
-& Phase 2 (one-note-per-player search) \\
-No web interface, score export, morphing or creative mode &
-Phases 3--5 \\
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Recorded levels are not playing levels (piano ff $\approx$ 4 dB
+below pp); no loudness model\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Phase 2 (or new recordings)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Every frequency bin counts equally ($\sigma = 1$); with power
+spectra the loudest partials dominate\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Phase 2 (choice of $\sigma$)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+No playability: several notes may be assigned to one
+player\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Phase 2 (one-note-per-player search)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Dynamics are mf only (except piano); 29 glockenspiel notes
+missing; bass sax has 8 notes\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Phase 1 follow-up: re-split the glockenspiel track; source
+pp/ff recordings\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+No web interface, score export, morphing or creative
+mode\strut
+\end{minipage} &
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Phases 3--5\strut
+\end{minipage}\tabularnewline
+\bottomrule
 \end{longtable}
 
-See \texttt{Reading/LabOrch\_Review\_and\_Plan.docx} for the
-full plan.
+The full plan is in the project's Planning documents (not in
+the public repo).
 
 \end{document}

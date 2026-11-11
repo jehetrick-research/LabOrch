@@ -19,9 +19,18 @@ requires_audio = pytest.mark.skipif(not _have_audio(), reason="needs pydub + ffm
 
 @pytest.fixture(scope="session")
 def bank():
-    if not config.FFT_DIR.exists():
-        pytest.skip(f"Bank not found at {config.FFT_DIR}")
+    """Bank v2 (the default): power spectra with levels and metadata."""
+    if not config.BANK_FILE.exists():
+        pytest.skip(f"Bank v2 not found at {config.BANK_FILE}")
     return Bank.load()
+
+
+@pytest.fixture(scope="session")
+def bank_v1():
+    """Bank v1: the FFTBank text files (unit-sum magnitude spectra)."""
+    if not config.FFT_DIR.exists():
+        pytest.skip(f"Bank v1 not found at {config.FFT_DIR}")
+    return Bank.load(version=1)
 
 
 @pytest.fixture(scope="session")

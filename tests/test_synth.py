@@ -41,10 +41,10 @@ def test_peaks_at_partials(spec):
     assert np.allclose(rel, [1.0, 0.45, 0.21], atol=0.04)   # window smears 0.5, 0.25
 
 
-def test_marimba_decomposition(bank, spec):
+def test_marimba_decomposition(bank_v1, spec):
     """NNLS explains the synthetic tone with a real marimba C3 plus
     marimba notes on the 4th (C5) and 10th (about E6) partials."""
-    fit = nnls_fit(bank.select(instruments=["mrb"]), spec)
+    fit = nnls_fit(bank_v1.select(instruments=["mrb"]), spec)
     top = [n for n, _ in fit.ranked(3)]
     assert top[0] == "mrb-c3-ord-mf"
     assert set(top) == {"mrb-c3-ord-mf", "mrb-c5-ord-mf", "mrb-e6-ord-mf"}

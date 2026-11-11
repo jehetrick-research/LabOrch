@@ -8,7 +8,8 @@ from tests.conftest import requires_audio
 
 @requires_audio
 @pytest.mark.parametrize("name", ["flu-e4-ord-mf", "vln-a4x-ord-mf", "pno-c4-ord-ff", "tpc-c5-ord-mf"])
-def test_rebuilds_bank_file(bank, name):
+def test_rebuilds_bank_v1_file(bank_v1, name):
+    bank = bank_v1
     ref = bank.spectrum(name)
     got = fft_of_file(bank.sound_path(name))
     assert np.max(np.abs(got - ref)) / ref.max() < 5e-3

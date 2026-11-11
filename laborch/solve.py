@@ -147,7 +147,11 @@ def nnls_fit(palette: Palette, target: np.ndarray,
     code did. Choosing sigma (relative, perceptual, ...) is a Phase 2 task.
     """
     A, b = _weighted(palette, target, sigma)
+    # Bank v2 power spectra are tiny numbers (about 1e-8); scaling A and b
+    # by the same factor leaves the solution unchanged and keeps scipy's
+    # tolerances meaningful.
+    scale = float(np.abs(A).max()) or 1.0
     kw = {} if maxiter is None else {"maxiter": maxiter}
-    w, _ = nnls(A, b, **kw)
+    w, _ = nnls(A / scale, b / scale, **kw)
     return Fit(list(palette.names), w, np.asarray(target, float),
                palette.matrix, "nnls", sigma)

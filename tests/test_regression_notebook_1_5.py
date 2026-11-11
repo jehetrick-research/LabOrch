@@ -4,6 +4,7 @@ The notebook used the 2009 .nbb spectra and printed these NNLS weights;
 the package must give the same numbers.
 """
 import numpy as np
+import pytest
 
 from laborch import nnls_fit, pinv_fit
 
@@ -32,8 +33,11 @@ def test_pinv_gives_negative_weights_nnls_does_not(old_bank):
     assert (nnls_fit(pal, t).weights >= 0).all()
 
 
-def test_current_bank_same_answer(bank):
-    """With the rebuilt Bank the flute A4 still carries the violin A4."""
+@pytest.mark.parametrize("which", ["bank", "bank_v1"])
+def test_current_bank_same_answer(which, request):
+    """With the rebuilt Banks (v1 magnitude, v2 power) the flute A4 still
+    carries the violin A4."""
+    bank = request.getfixturevalue(which)
     pal = bank.select(instruments=["flu"])
     for target in ["vln-a4o-ord-mf", "vln-a4x-ord-mf"]:
         f = nnls_fit(pal, bank.spectrum(target))

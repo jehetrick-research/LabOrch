@@ -25,8 +25,8 @@ subprocess.run(["pandoc", f"{out}/_tex.md", "-f", "markdown+gfm_auto_identifiers
     "-V", "documentclass=article", "-V", "geometry:margin=2.2cm", "-V", "fontsize=10pt",
     "-V", "mainfont=DejaVu Serif", "-V", "sansfont=DejaVu Sans", "-V", "monofont=DejaVu Sans Mono",
     "-V", "monofontoptions=Scale=0.85", "-V", "colorlinks=true", "-V", "linkcolor=blue", "-V", "urlcolor=blue",
-    "-M", "title=laborch: Package Manual", "-M", "subtitle=Version 0.1.0 (Phase 0)",
-    "-M", "author=LabOrch project", "-M", "date=October 2026", "-H", hdr], check=True)
+    "-M", "title=laborch: Package Manual", "-M", "subtitle=Version 0.2.0 (Phase 1)",
+    "-M", "author=LabOrch project", "-M", "date=November 2026", "-H", hdr], check=True)
 t = open(tex).read()
 t = t.replace("\\usepackage{lmodern}\n", "")
 W = r"\s+"          # pandoc wraps lines; match any whitespace between words
